@@ -1,6 +1,8 @@
+from enum import unique
+
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 
 
 class RegisterForm(forms.ModelForm):
@@ -56,3 +58,28 @@ class RegisterForm(forms.ModelForm):
         return user
 
 
+class LoginForm(forms.Form):
+
+    username = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'class':'input',
+            'placeholder':'Username'
+        }),
+    )
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class':'input',
+        'placeholder':'Password'
+    }))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+
+        if password and username:
+            user = authenticate(username=username, password=password)
+            if user is None:
+                raise forms.ValidationError('Validate username or password')
+            self.user = user
+        return cleaned_data

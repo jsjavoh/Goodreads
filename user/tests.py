@@ -1,3 +1,4 @@
+from django.template.context_processors import request
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -63,3 +64,39 @@ class RegisterTeatCase(TestCase):
         user_count = User.objects.count()
         self.assertEqual(user_count, 1)
         self.assertFormError(response.context['form'],'password_confirm','Parol maydonlariga bir xil qiymat kiritilishi shart!')
+
+
+class LoginTestCase(TestCase):
+
+    def setUp(self):
+        User.objects.create_user(
+            username='js',
+            first_name='Javohir',
+            last_name='Sattorov',
+            email='jsjavoh@gmail.com',
+            password='Asd12345'
+        )
+
+    def test_login(self):
+        response = self.client.post(
+            reverse('user:login'),
+            data={
+                'username':'js',
+                'password':'Asd12345'
+            }
+        )
+
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_wrong(self):
+        response = self.client.post(
+            reverse('user:login'),
+            data={
+                'username': 'js',
+                'password': 'xatoparol'
+            }
+        )
+        self.assertFormError(response.context['form'], None, 'Validate username or password')
+        self.assertEqual(response.status_code, 200)
+
