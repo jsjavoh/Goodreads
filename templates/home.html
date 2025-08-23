@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOME</title>
+    <style>
+        .input{
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Home Page</h1>
+<p><a href="{% url 'user:register' %}">Signup</a></p>
+<hr>
+{% block content %}
+{% endblock %}
+</body>
+</html>

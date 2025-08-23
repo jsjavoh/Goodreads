@@ -1,0 +1,42 @@
+{% extends 'home.html' %}
+{% block content %}
+    <h2>Register</h2>
+    <form action="{% url 'user:register' %}" method="post">{% csrf_token %}
+    <div class="input">
+        {{ form.username }}
+        {% for error in form.username.errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="input">
+        {{ form.first_name }}
+        {% for error in form.first_name.errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="input">
+        {{ form.last_name }}
+    {% for error in form.last_name.errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}</div>
+    <div class="input">
+        {{ form.email }}
+        {% for error in form.email.errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="input">
+        {{ form.password }}
+        {% for error in form.password.errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="input">
+        {{ form.password_confirm }}
+        {% for error in form.password_confirm.errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="input">Signup</button>
+    </form>
+{% endblock %}
