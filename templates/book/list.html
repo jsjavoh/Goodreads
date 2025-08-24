@@ -1,0 +1,13 @@
+{% extends 'home.html' %}
+
+{% block content %}
+    {% if books %}
+        {% for book in books %}
+        <ul>
+            <li><a href="{% url 'books:detail' book.id %}">{{ book.title }}</a></li>
+        </ul>
+        {% endfor %}
+    {% else %}
+        <p>No books found.</p>
+    {% endif %}
+{% endblock %}

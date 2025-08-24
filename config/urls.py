@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view(), name='home'),
     path('users/', include('user.urls')),
+    path('books/',include('book.urls')),
 ]
