@@ -139,3 +139,56 @@ class ProfileTestCase(TestCase):
         self.assertContains(response, user.last_name)
         self.assertContains(response, user.email)
 
+    def test_profile_edit(self):
+
+        user = User.objects.create_user(
+            username='js',
+            first_name='Javohir',
+            last_name='Sattorov',
+            email='jsjavoh@gmail.com',
+            password='Asd12345'
+        )
+
+        self.client.login(username='js', password='Asd12345')
+
+        response = self.client.post(
+            reverse('user:profile-edit'),
+            data={
+            'username':'jsf',
+            'first_name':'Javohir',
+            'last_name':'Sattorov',
+            'email':'jsjavoh@gmail.com'
+        })
+
+        user.refresh_from_db()
+        self.assertEqual(response.url, reverse('user:profile'))
+        self.assertEqual(user.username, 'jsf')
+        self.assertEqual(response.status_code, 302)
+
+    def test_profile_edit_username(self):
+        user = User.objects.create_user(
+            username='js',
+            first_name='Javohir',
+            last_name='Sattorov',
+            email='jsjavoh@gmail.com',
+            password='Asd12345'
+        )
+        user2 = User.objects.create_user(
+            username='jsf',
+            first_name='Javohir',
+            last_name='Sattorov',
+            email='jsjavoh@gmail.com',
+            password='Asd12345'
+        )
+        self.client.login(username='js', password='Asd12345')
+
+        response = self.client.post(
+            reverse('user:profile-edit'),
+            data={
+                'username': 'jsf',
+                'first_name': 'Javohir',
+                'last_name': 'Sattorov',
+                'email': 'jsjavoh@gmail.com'
+            })
+
+        self.assertFormError(response.context['form'],'username','Bu username allaqachon db\'da mavjud')

@@ -83,3 +83,38 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError('Validate username or password')
             self.user = user
         return cleaned_data
+
+
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model=User
+        fields = ['username','first_name','last_name','email']
+
+        widgets={
+            'username':forms.TextInput(attrs={
+                'class':'input',
+                'placeholder':'Username'
+            }),
+            'first_name':forms.TextInput(attrs={
+                'class':'input',
+                'placeholder':'First name',
+            }),
+            'last_name':forms.TextInput(attrs={
+                'class':'input',
+                'placeholder':'Last name',
+            }),
+            'email':forms.TextInput(attrs={
+                'class':'input',
+                'placeholder':'Email'
+            })
+        }
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            self.add_error('username','Bu username allaqachon db\'da mavjud')
+
+        return cleaned_data

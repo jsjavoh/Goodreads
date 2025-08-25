@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, ProfileForm
 
 class RegisterView(View):
     def get(self, request):
@@ -47,3 +47,18 @@ class LogoutView(View, LoginRequiredMixin):
         messages.success(request,"Siz tizimdan chiqdingiz!")
         return redirect('home')
 
+
+class ProfileEditView(View, LoginRequiredMixin):
+
+    def get(self, request):
+        form = ProfileForm(instance=request.user)
+        return render(request, 'user/profile_edit.html', {'form':form})
+
+    def post(self, request):
+        form = ProfileForm(data=request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User malumotlari o\'zgartirildi!')
+            return redirect('user:profile')
+        return render(request,'user/profile_edit.html', {'form':form})
