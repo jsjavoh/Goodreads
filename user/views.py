@@ -1,4 +1,5 @@
-from django.contrib.auth import login
+from django.contrib import messages
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
@@ -14,6 +15,7 @@ class RegisterView(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "User yaratildi hamda Login amalga oshirildi!")
             return redirect('home')
         return render(request, 'user/register.html',{'form':form})
 
@@ -27,6 +29,7 @@ class LoginView(View):
         form = LoginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
+            messages.info(request, 'Muvaffaqiyatli Login amalga oshdi.')
             return redirect('home')
         return render(request, 'user/login.html',{'form':form})
 
@@ -36,3 +39,11 @@ class ProfileView(LoginRequiredMixin ,View):
 
     def get(self, request):
         return render(request, 'user/profile.html',{'user':request.user})
+
+class LogoutView(View, LoginRequiredMixin):
+
+    def get(self, request):
+        logout(request)
+        messages.success(request,"Siz tizimdan chiqdingiz!")
+        return redirect('home')
+

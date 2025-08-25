@@ -1,3 +1,5 @@
+from django.contrib.auth.middleware import get_user
+from django.template.context_processors import request
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -75,6 +77,15 @@ class LoginTestCase(TestCase):
             email='jsjavoh@gmail.com',
             password='Asd12345'
         )
+
+    def test_logout(self):
+        self.client.login(username='js', password='Asd12345')
+
+        response = self.client.get(reverse('user:logout'))
+
+        user = get_user(self.client)
+        self.assertFalse(user.is_authenticated)
+
 
     def test_login(self):
         response = self.client.post(
