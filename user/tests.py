@@ -1,4 +1,3 @@
-from django.template.context_processors import request
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -99,4 +98,33 @@ class LoginTestCase(TestCase):
         )
         self.assertFormError(response.context['form'], None, 'Validate username or password')
         self.assertEqual(response.status_code, 200)
+
+
+class ProfileTestCase(TestCase):
+
+    def test_no_requried(self):
+        response = self.client.get(reverse('user:profile'))
+
+        self.assertEqual(response.url, reverse('user:login')+"?next=/users/profile/")
+        self.assertEqual(response.status_code, 302)
+
+    def test_profile_detail(self):
+
+        user = User.objects.create_user(
+            username='js',
+            first_name='Javohir',
+            last_name='Sattorov',
+            email='jsjavoh@gmail.com',
+            password='Asd12345'
+        )
+
+        self.client.login(username='js', password='Asd12345')
+
+        response = self.client.get(reverse('user:profile'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, user.username)
+        self.assertContains(response, user.first_name)
+        self.assertContains(response, user.last_name)
+        self.assertContains(response, user.email)
 
