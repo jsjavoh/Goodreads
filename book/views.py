@@ -8,8 +8,12 @@ class BookView(View):
 
     def get(self, request):
         books = Book.objects.all().order_by('id')
-        paginator = Paginator(books, 2)
 
+        search_query = request.GET.get('q')
+        if search_query:
+            books = books.filter(title__icontains=search_query)
+
+        paginator = Paginator(books, 2)
         page_num = request.GET.get('page',1)
 
         page_obj = paginator.get_page(page_num)
