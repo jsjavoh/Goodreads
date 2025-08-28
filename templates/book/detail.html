@@ -6,4 +6,12 @@
 <h2>{{ book.title }}</h2>
 <i>{{ book.isbn }}</i>
 <p>{{ book.discription }}</p>
+{% if book.bookreview_set.all %}
+<div> <b>Commits:</b><br>
+    {% for review in book.bookreview_set.all %}
+        <i>{{ review.user.username }} | {{ review.star_given }} stars {{ review.created_time }}</i>
+        <p> <b>commit:</b>  {{ review.commit }}</p>
+    </div>
+    {% endfor %}
+{% endif %}
 {% endblock %}

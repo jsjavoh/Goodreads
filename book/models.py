@@ -1,6 +1,9 @@
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 class Book(models.Model):
 
@@ -36,4 +39,8 @@ class BookReview(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     commit = models.TextField()
     star_given = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    created_time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username}'s commit"
 

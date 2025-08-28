@@ -1,10 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from .models import Book
 from django.views import View
 from django.core.paginator import Paginator
 
 
-class BookView(View):
+class BookView(LoginRequiredMixin,View):
 
     def get(self, request):
         books = Book.objects.all().order_by('id')
