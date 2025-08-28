@@ -2,13 +2,21 @@
 {% block title %}List{% endblock %}
 {% block content %}
     <h2>Books Page</h2>
-    {% if books %}
-        {% for book in books %}
+    {% if page_obj %}
+        {% for book in page_obj %}
         <ul>
             <li><a href="{% url 'books:detail' book.id %}">{{ book.title }}</a></li>
         </ul>
         {% endfor %}
-    {% else %}
+
+        {% if page_obj.has_previous %}
+            <a href="{% url 'books:list' %}?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        {{ page_obj.number }}
+        {% if page_obj.has_next %}
+            <a href="{% url 'books:list' %}?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+        {% else %}
         <p>No books found.</p>
     {% endif %}
 {% endblock %}
