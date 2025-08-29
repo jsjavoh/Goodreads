@@ -6,7 +6,13 @@
 <h2>{{ book.title }}</h2>
 <i>{{ book.isbn }}</i>
 <p>{{ book.discription }}</p>
-{% if book.bookreview_set.all %}
+    <form action="{% url 'books:review' book.id %}" method="post">{% csrf_token %}
+        <div class="input">{{ review_form.star_given }}</div>
+        <div class="input">{{ review_form.commit }}</div>
+        <button type="submit">Add Review</button>
+        <br><br>
+    </form>
+    {% if book.bookreview_set.all %}
 <div> <b>Commits:</b><br>
     {% for review in book.bookreview_set.all %}
         <i>{{ review.user.username }} | {{ review.star_given }} stars {{ review.created_time }}</i>

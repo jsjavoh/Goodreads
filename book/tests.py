@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from .models import Book
@@ -5,6 +6,17 @@ from .models import Book
 class BooksTestCase(TestCase):
 
     def test_no_books(self):
+        user = User.objects.create_user(
+            username='js',
+            first_name='javohir',
+            last_name='sattorov',
+            email='jsjavoh@gmail.com',
+        )
+        user.set_password('Asd12345')
+        user.save()
+
+        self.client.login(username='js', password='Asd12345')
+
         response = self.client.get(
             reverse("books:list")
         )
@@ -12,6 +24,17 @@ class BooksTestCase(TestCase):
         self.assertContains(response, "No books found.")
 
     def test_books_list(self):
+        user = User.objects.create_user(
+            username='js',
+            first_name='javohir',
+            last_name='sattorov',
+            email='jsjavoh@gmail.com',
+        )
+        user.set_password('Asd12345')
+        user.save()
+
+        self.client.login(username='js', password='Asd12345')
+
         book1 = Book.objects.create(title='utgan kunlar',discription='muallif:Abdulla Qodiriy',isbn=1234567890123)
         book2 = Book.objects.create(title='utgan kunlar1', discription='muallif: Qodiriy', isbn=2234567890123)
         book3 = Book.objects.create(title='utgan kunlar3', discription='muallif: Abdulla', isbn=3234567890123)
@@ -29,6 +52,17 @@ class BooksTestCase(TestCase):
 
 
     def test_search_books(self):
+        user = User.objects.create_user(
+            username='js',
+            first_name='javohir',
+            last_name='sattorov',
+            email='jsjavoh@gmail.com',
+        )
+        user.set_password('Asd12345')
+        user.save()
+
+        self.client.login(username='js', password='Asd12345')
+
         book1 = Book.objects.create(title='sport', discription='muallif:Abdulla Qodiriy', isbn=1234567890123)
         book2 = Book.objects.create(title='local', discription='muallif: Qodiriy', isbn=2234567890123)
         book3 = Book.objects.create(title='global', discription='muallif: Abdulla', isbn=3234567890123)
@@ -59,6 +93,17 @@ class DetailTestCase(TestCase):
 
 
     def test_detail(self):
+        user = User.objects.create_user(
+            username='js',
+            first_name='javohir',
+            last_name='sattorov',
+            email='jsjavoh@gmail.com',
+        )
+        user.set_password('Asd12345')
+        user.save()
+
+        self.client.login(username='js', password='Asd12345')
+
         book = Book.objects.get(title='Utgan kunlar')
 
         response = self.client.get(reverse('books:detail', kwargs={'pk':book.id}))
@@ -66,5 +111,38 @@ class DetailTestCase(TestCase):
         self.assertContains(response, book.title)
         self.assertContains(response, book.isbn)
         self.assertContains(response, book.discription)
+
+
+    def test_review(self):
+        book = Book.objects.create(
+            title='title1',
+            discription= 'discription1',
+            isbn='1234567890120'
+        )
+        user = User.objects.create_user(
+            username='js',
+            first_name='javohir',
+            last_name='sattorov',
+            email='jsjavoh@gmail.com',
+        )
+        user.set_password('Asd12345')
+        user.save()
+
+        self.client.login(username='js',password='Asd12345')
+
+        self.client.post(
+            reverse('books:review', kwargs={'pk':book.id}),
+            data={
+                'star_given':2,
+                'commit':'good'
+        })
+        book_reviews = book.bookreview_set.all()
+        print(book_reviews)
+        self.assertEqual(book_reviews.count(), 1)
+        self.assertEqual(book_reviews[0].star_given, 2)
+        self.assertEqual(book_reviews[0].commit, 'good')
+        self.assertEqual(book_reviews[0].book,book)
+        self.assertEqual(book_reviews[0].user, user)
+
 
 
