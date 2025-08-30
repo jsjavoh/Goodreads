@@ -4,6 +4,16 @@
     <h2>Detail Page</h2>
     <img src="{{ book.cover_picture.url }}" alt="cover image">
 <h2>{{ book.title }}</h2>
+    <span>
+        Authored by
+        {% for book_author in book.bookauthor_set.all %}
+            {% if forloop.last %}
+                <i>{{ book_author.author.full_name }}</i>
+            {% else %}
+                <i>{{ book_author.author.full_name }}</i>,
+            {% endif %}
+        {% endfor %}
+    </span><br>
 <i>{{ book.isbn }}</i>
 <p>{{ book.discription }}</p>
     <form action="{% url 'books:review' book.id %}" method="post">{% csrf_token %}

@@ -3,6 +3,7 @@ from enum import unique
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 
 class RegisterForm(forms.ModelForm):
@@ -55,6 +56,13 @@ class RegisterForm(forms.ModelForm):
         user.set_password(self.cleaned_data.get('password'))
         if commit:
             user.save()
+            # if user.email:
+            #     send_mail(
+            #         'Welcome to Goodreads Clone',
+            #         f'Hi {user.username}, Welcome to Goodreads Clone, Enjoy the books and reviews.',
+            #         'jsjavoh@gmail.com',
+            #         [user.email],
+            #     )
         return user
 
 
